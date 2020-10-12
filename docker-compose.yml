@@ -1,0 +1,48 @@
+version: "3.8"
+services:
+   todo:
+      build: todo/r3
+      image: "todo:release-3"
+      container_name: todo
+      networks: 
+         - todo-net
+      
+   webapp:
+      build: webapp/r3
+      image: "todo-webapp:release-3"
+      container_name: webapp
+      stdin_open: true
+      networks: 
+         - todo-net
+      ports:
+         - 3000:3000
+   
+   notification:
+      build: notification/r1
+      image: "todo-notification:release-1.1"
+      container_name: notification
+      stdin_open: true
+      networks: 
+         - todo-net
+
+   api_gateway:
+      build: api_gateway/r1
+      image: "api_gateway:release-1"
+      container_name: api_gateway
+      stdin_open: true
+      networks: 
+         - todo-net
+      ports:
+         - 8000:8000
+   
+   redis:
+      image: "redis:alpine"
+      command: ["redis-server", "--appendonly", "yes"]
+      volumes:
+         - ./redis-data:/data
+      networks:
+         - todo-net
+
+networks: 
+   todo-net: {}
+
